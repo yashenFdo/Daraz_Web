@@ -2,12 +2,15 @@ package com.daraz.web.service;
 
 import jakarta.persistence.Id;
 
+import java.util.List;
+
 public interface CustomerService <T,ID>{
 
-    void saveCustomer(T customerDTO);
-    void modifyCustomer(Id id, T customerDTO);
-    void removeCustomer(ID id);
-    void viewCustomer(Id id);
+    T saveCustomer(T customerDTO);
+    T modifyCustomer(Id id, T customerDTO);
+    boolean removeCustomer(ID id);
+    T viewCustomer(Id id);
+    List<T> viewAllCustomers();
 
 
 }

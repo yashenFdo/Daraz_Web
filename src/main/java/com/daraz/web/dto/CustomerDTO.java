@@ -16,9 +16,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 public class CustomerDTO {
+    private String id;
     private String firstName;
     private String lastName;
+
     private String email;
     private String mobileNumber; // so i expect it shout +94 format.
+
     private String nic;
 }
