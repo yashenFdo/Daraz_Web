@@ -17,7 +17,7 @@ import lombok.Setter;
 public class Customer {
     @Id
     @GeneratedValue(
-            strategy = GenerationType.AUTO
+            strategy = GenerationType.UUID
     )
     private String id;
     private String firstName;

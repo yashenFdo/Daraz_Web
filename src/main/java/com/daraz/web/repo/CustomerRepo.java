@@ -6,7 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CustomerRepo extends JpaRepository<Customer,String> {
 
-    Customer saveCustomer(Customer customer);
-
-
+    boolean existsByNic(String nic);
 }
