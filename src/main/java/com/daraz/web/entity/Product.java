@@ -1,6 +1,5 @@
 package com.daraz.web.entity;
 
-import com.daraz.web.enums.ProductCategory;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -30,7 +29,7 @@ public class Product {
     @Id
     @Column(name = "product_id")
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String productId;
+    private String id;
 
     @Column(name = "sku", unique = true, nullable = false, length = 100)
     private String sku;
@@ -41,14 +40,20 @@ public class Product {
     @Column(name = "description", columnDefinition = "TEXT")
     private String productDescription;
 
+    @Column(name = "warranty" , columnDefinition = "TEXT", nullable = false)
+    private String warranty;
+
     private String brandName;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "category", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id", nullable = false)
     private ProductCategory category;
 
     private String seller; // I'll  change once create Seller Entity
     private String ShopName; // same as above one.
+
+    @Column(name = "items_sold", columnDefinition = "INT DEFAULT 0")
+    private int itemsSold;
 
     @Column(name = "qty_on_hand", nullable = false)
     private int quantityOnHand;
@@ -62,7 +67,7 @@ public class Product {
     @Column(precision = 12, scale = 2)
     private BigDecimal priceAfterDiscount;
 
-    private float discountPercentage;
+    private BigDecimal discountPercentage;
 
     @Column(columnDefinition = "TEXT")
     private String productImageUrlMain;
@@ -82,6 +87,12 @@ public class Product {
     @Column(name = "review_count", columnDefinition = "INT DEFAULT 0")
     private int reviewCount;
 
+    @Column(name = "is_active")
+    private boolean isActive = true; // Seller can toggle this ON/OFF.
+
+    @Column(name = "is_deleted")
+    private boolean isDeleted = false; // For Soft Deletes
+
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ProductReview> reviews = new ArrayList<>();
 
@@ -95,5 +106,15 @@ public class Product {
             this.reviewCount++;
             this.averageRating = (currentTotalStars + newStar) / this.reviewCount;
         }
+    }
+
+    // this will help for filtering
+    public boolean isAvailable() {
+        return this.quantityOnHand > 0 && this.isActive && !this.isDeleted;
+    }
+
+    // sold count.
+    public void incrementSoldCount(int quantity) {
+        this.itemsSold += quantity;
     }
 }

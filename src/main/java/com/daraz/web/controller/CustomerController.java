@@ -1,6 +1,6 @@
 package com.daraz.web.controller;
 
-import com.daraz.web.dto.CustomerDTO;
+import com.daraz.web.dto.customer.CustomerDTO;
 import com.daraz.web.service.CustomerService;
 import com.daraz.web.util.StandardResponse;
 import lombok.RequiredArgsConstructor;
@@ -15,11 +15,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CustomerController {
 
-    private final CustomerService<CustomerDTO,String> customerService;
+    private final CustomerService customerService;
 
     @GetMapping("/{id}")
     public ResponseEntity<StandardResponse> getCustomer(@PathVariable String id){
-        CustomerDTO customerDTO = customerService.viewCustomer(id);
+        CustomerDTO customerDTO = customerService.viewById(id);
         return new ResponseEntity<StandardResponse>(
                 new StandardResponse(
                         200,
@@ -32,7 +32,7 @@ public class CustomerController {
     @PostMapping("/create")
     public ResponseEntity<StandardResponse> createCustomer(@RequestBody CustomerDTO customerDTO){
 
-        CustomerDTO savedCustomer = customerService.saveCustomer(customerDTO);
+        CustomerDTO savedCustomer = customerService.save(customerDTO);
         return new ResponseEntity<>(
                 new StandardResponse(
                         201,
@@ -45,7 +45,7 @@ public class CustomerController {
 
     @PutMapping("/modify/{id}")
     public ResponseEntity<StandardResponse> updateCustomer(@PathVariable String id,@RequestBody CustomerDTO customerDTO){
-        CustomerDTO updatedCustomer = customerService.modifyCustomer(id, customerDTO);
+        CustomerDTO updatedCustomer = customerService.modify(id, customerDTO);
         return new ResponseEntity<StandardResponse>(
                 new StandardResponse(
                         200,
@@ -58,7 +58,7 @@ public class CustomerController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<StandardResponse> remove(@PathVariable String id){
-        boolean isDeleted = customerService.removeCustomer(id);
+        boolean isDeleted = customerService.remove(id);
         return new ResponseEntity<StandardResponse>(
                 new StandardResponse(
                         200,
@@ -70,7 +70,7 @@ public class CustomerController {
 
     @GetMapping("")
     public ResponseEntity<StandardResponse> getAllCustomers(){
-        List<CustomerDTO> customerDTOS = customerService.viewAllCustomers();
+        List<CustomerDTO> customerDTOS = customerService.viewAll();
         return new ResponseEntity<>(
                 new StandardResponse(
                         200,

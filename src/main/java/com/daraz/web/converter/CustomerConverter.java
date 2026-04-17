@@ -1,6 +1,6 @@
 package com.daraz.web.converter;
 
-import com.daraz.web.dto.CustomerDTO;
+import com.daraz.web.dto.customer.CustomerDTO;
 import com.daraz.web.entity.Customer;
 import org.mapstruct.Mapper;
 

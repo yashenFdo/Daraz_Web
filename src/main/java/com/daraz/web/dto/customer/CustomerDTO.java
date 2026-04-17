@@ -1,4 +1,4 @@
-package com.daraz.web.dto;
+package com.daraz.web.dto.customer;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

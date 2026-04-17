@@ -1,19 +1,16 @@
 package com.daraz.web.service.impl;
 
 import com.daraz.web.converter.CustomerConverter;
-import com.daraz.web.dto.CustomerDTO;
+import com.daraz.web.dto.customer.CustomerDTO;
 import com.daraz.web.entity.Customer;
 import com.daraz.web.exception.custom.DuplicateEntryException;
 import com.daraz.web.exception.custom.EntryNotFoundException;
 import com.daraz.web.repo.CustomerRepo;
 import com.daraz.web.service.CustomerService;
-import jakarta.persistence.Id;
 import lombok.RequiredArgsConstructor;
-import org.aspectj.weaver.ast.Not;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * @author : yashen
@@ -25,13 +22,13 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
-public class CustomerServiceImpl implements CustomerService<CustomerDTO,String> {
+public class CustomerServiceImpl implements CustomerService{
 
     private final CustomerRepo customerRepo;
     private final CustomerConverter customerConverter;
 
     @Override
-    public CustomerDTO saveCustomer(CustomerDTO customerDTO) {
+    public CustomerDTO save(CustomerDTO customerDTO) {
 
         if (customerRepo.existsByEmail(customerDTO.getEmail())) {
             throw new DuplicateEntryException("Email is already registered!");
@@ -51,7 +48,7 @@ public class CustomerServiceImpl implements CustomerService<CustomerDTO,String> 
     }
 
     @Override
-    public CustomerDTO modifyCustomer(String id, CustomerDTO customerDTO) {
+    public CustomerDTO modify(String id, CustomerDTO customerDTO) {
         // check the mobile and nic,email already used or not.
         // check customer by id
         // then save it.
@@ -85,7 +82,7 @@ public class CustomerServiceImpl implements CustomerService<CustomerDTO,String> 
     }
 
     @Override
-    public boolean removeCustomer(String id) {
+    public boolean remove(String id) {
         if (!customerRepo.existsById(id)){
             throw new EntryNotFoundException("Customer Account Not Found!, given account id : "+id);
         }
@@ -95,14 +92,14 @@ public class CustomerServiceImpl implements CustomerService<CustomerDTO,String> 
     }
 
     @Override
-    public CustomerDTO viewCustomer(String id) {
+    public CustomerDTO viewById(String id) {
         return customerRepo.findById(id)
                 .map(customer -> customerConverter.toDto(customer))
                 .orElseThrow(()-> new EntryNotFoundException("Customer Account Not Found!, given account id : "+id));
     }
 
     @Override
-    public List<CustomerDTO> viewAllCustomers() {
+    public List<CustomerDTO> viewAll() {
         List<Customer> all = customerRepo.findAll();
         return customerConverter.toDtoList(all);
     }

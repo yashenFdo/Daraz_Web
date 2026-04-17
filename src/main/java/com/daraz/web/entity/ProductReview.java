@@ -35,6 +35,12 @@ public class ProductReview {
     private LocalDateTime date;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "customer_id",
+            referencedColumnName = "customer_id",
+            nullable = false,
+            columnDefinition = "VARCHAR(36)"
+    )
     private Customer customer;
 
     @ManyToOne(fetch = FetchType.LAZY)
