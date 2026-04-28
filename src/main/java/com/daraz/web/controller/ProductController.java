@@ -1,15 +1,13 @@
 package com.daraz.web.controller;
 
+import com.daraz.web.dto.product.ProductRequestDTO;
 import com.daraz.web.dto.product.ProductResponseDTO;
 import com.daraz.web.service.ProductService;
 import com.daraz.web.util.StandardResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author : yashen
@@ -28,7 +26,7 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<StandardResponse> createProduct(@PathVariable String id){
+    public ResponseEntity<StandardResponse> viewProduct(@PathVariable String id){
         ProductResponseDTO productResponseDTO = productService.viewById(id);
         return new ResponseEntity<>(
                 new StandardResponse(
@@ -36,6 +34,18 @@ public class ProductController {
                         "Product Found!",
                         productResponseDTO
                 ), HttpStatus.OK
+        );
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<StandardResponse> createProduct(@RequestBody ProductRequestDTO productRequestDTO){
+        ProductResponseDTO savedProduct = productService.save(productRequestDTO);
+        return new ResponseEntity<>(
+                new StandardResponse(
+                        201,
+                        "New Product Added!",
+                        savedProduct
+                ),HttpStatus.CREATED
         );
     }
 }
