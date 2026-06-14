@@ -5,6 +5,8 @@ import com.daraz.web.dto.product.ProductResponseDTO;
 import com.daraz.web.entity.Product;
 import org.mapstruct.Mapper;
 
+import java.util.List;
+
 /**
  * @author : yashen
  * @created : 4/17/26
@@ -17,4 +19,6 @@ public interface ProductConverter {
 
     Product toEntity(ProductRequestDTO productRequestDTO);
     ProductResponseDTO toDto(Product product);
+
+    List<ProductResponseDTO> toResponseDTOList(List<Product> content);
 }

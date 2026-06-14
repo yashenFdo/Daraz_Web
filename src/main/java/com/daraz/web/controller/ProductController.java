@@ -1,5 +1,7 @@
 package com.daraz.web.controller;
 
+import com.daraz.web.dto.product.PaginatedProductResponseDTO;
+import com.daraz.web.dto.product.ProductFilterRequestDTO;
 import com.daraz.web.dto.product.ProductRequestDTO;
 import com.daraz.web.dto.product.ProductResponseDTO;
 import com.daraz.web.service.ProductService;
@@ -48,4 +50,50 @@ public class ProductController {
                 ),HttpStatus.CREATED
         );
     }
+
+    @PatchMapping("/modify/{id}")
+    public ResponseEntity<StandardResponse> modifyProduct(@PathVariable String id, @RequestBody ProductRequestDTO productRequestDTO){
+        ProductResponseDTO modifiedProduct  = productService.modify(id, productRequestDTO);
+        return new ResponseEntity<>(
+                new StandardResponse(
+                        200,
+                        "Product Modified!",
+                        modifiedProduct
+                ),HttpStatus.OK
+        );
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<StandardResponse> removeProduct(@PathVariable String id){
+        boolean isRemove = productService.remove(id);
+        return new ResponseEntity<StandardResponse>(
+                new StandardResponse(
+                        200,
+                        "Deleted!",
+                        id
+                ),HttpStatus.OK
+        );
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<StandardResponse> searchProducts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size,
+            ProductFilterRequestDTO filter
+    ) {
+
+        PaginatedProductResponseDTO filteredProducts = productService.viewFilteredProducts(page, size, filter);
+
+        return new ResponseEntity<>(
+                new StandardResponse(
+                        200,
+                        "Filtered",
+                        filteredProducts
+
+                ),HttpStatus.OK
+        );
+    }
+
+
+
 }
