@@ -48,25 +48,57 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductResponseDTO modify(String s, ProductRequestDTO dto) {
-        return null;
+    public ProductResponseDTO modify(String id, ProductRequestDTO dto) {
+        if (productRepo.existsBySkuAndIdNot(dto.getSku(), id)) {
+            throw new DuplicateEntryException("This SKU is already registered to another product!");
+        }
+
+        return productRepo.findById(id)
+                .map(product -> {
+                    product.setSku(dto.getSku());
+                    product.setProductName(dto.getProductName());
+                    product.setProductDescription(dto.getProductDescription());
+                    product.setBrandName(dto.getBrandName());
+                    product.setWarranty(dto.getWarranty());
+                    product.setCategory(dto.getCategory());
+                    product.setQuantityOnHand(dto.getQuantityOnHand());
+                    product.setSizeOfOneUnit(dto.getSizeOfOneUnit());
+                    product.setOriginalPrice(dto.getOriginalPrice());
+                    product.setDiscountPercentage(dto.getDiscountPercentage());
+                    product.setProductImageUrlMain(dto.getProductImageUrlMain());
+                    product.setProductImageUrl1(dto.getProductImageUrl1());
+                    product.setProductImageUrl2(dto.getProductImageUrl2());
+                    product.setProductImageUrl3(dto.getProductImageUrl3());
+
+                    Product saved = productRepo.save(product);
+                    return productConverter.toDto(saved);
+                })
+                .orElseThrow(() -> new EntryNotFoundException("Product Not Found with id: " + id));
     }
 
     @Override
-    public boolean remove(String s) {
-        return false;
+    public boolean remove(String id) {
+        return productRepo.findById(id)
+                .map(product -> {
+                    product.setDeleted(true);
+                    productRepo.save(product);
+                    return true;
+                })
+                .orElseThrow(() -> new EntryNotFoundException("Product Not Found with id: " + id));
     }
 
     @Override
     public ProductResponseDTO viewById(String id) {
          return productRepo.findById(id)
+                 .filter(product -> !product.isDeleted()) // Exclude soft-deleted products from viewById
                  .map(product -> productConverter.toDto(product))
                  .orElseThrow(()-> new EntryNotFoundException("Product Not Found!"));
     }
 
     @Override
     public List<ProductResponseDTO> viewAll() {
-        return null;
+        List<Product> all = productRepo.findAllByIsDeletedFalse();
+        return productConverter.toResponseDTOList(all);
     }
 
     @Override
