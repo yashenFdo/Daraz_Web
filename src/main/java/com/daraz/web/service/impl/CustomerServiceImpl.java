@@ -26,6 +26,7 @@ public class CustomerServiceImpl implements CustomerService{
 
     private final CustomerRepo customerRepo;
     private final CustomerConverter customerConverter;
+    private final com.daraz.web.service.EmailService emailService;
 
     @Override
     public CustomerDTO save(CustomerDTO customerDTO) {
@@ -44,7 +45,10 @@ public class CustomerServiceImpl implements CustomerService{
 
         Customer customer = customerConverter.toEntity(customerDTO);
         Customer savedCustomer = customerRepo.save(customer);
-        return customerConverter.toDto(savedCustomer);
+        
+        CustomerDTO resultDto = customerConverter.toDto(savedCustomer);
+        emailService.sendWelcomeEmail(resultDto.getEmail(), resultDto.getFirstName());
+        return resultDto;
     }
 
     @Override

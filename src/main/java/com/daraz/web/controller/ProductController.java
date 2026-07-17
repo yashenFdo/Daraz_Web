@@ -26,6 +26,8 @@ import org.springframework.web.bind.annotation.*;
 public class ProductController {
 
     private final ProductService productService;
+    private final com.daraz.web.service.CustomerService customerService;
+    private final com.daraz.web.service.EmailService emailService;
 
     @GetMapping("/{id}")
     public ResponseEntity<StandardResponse> viewProduct(@PathVariable String id){
@@ -94,6 +96,27 @@ public class ProductController {
         );
     }
 
-
-
+    @PostMapping("/promote-discount/{productId}")
+    public ResponseEntity<StandardResponse> promoteProductDiscount(@PathVariable String productId) {
+        ProductResponseDTO product = productService.viewById(productId);
+        
+        java.util.List<com.daraz.web.dto.customer.CustomerDTO> customers = customerService.viewAll();
+        for (com.daraz.web.dto.customer.CustomerDTO customer : customers) {
+            emailService.sendProductDiscountPromotionEmail(
+                    customer.getEmail(),
+                    product.getProductName(),
+                    product.getOriginalPrice() != null ? product.getOriginalPrice().toString() : "0.0",
+                    product.getPriceAfterDiscount() != null ? product.getPriceAfterDiscount().toString() : "0.0",
+                    product.getDiscountPercentage() != null ? product.getDiscountPercentage().toString() : "0"
+            );
+        }
+        
+        return new ResponseEntity<>(
+                new StandardResponse(
+                        200,
+                        "Promotional broadcast emails sent to " + customers.size() + " customers!",
+                        null
+                ), HttpStatus.OK
+        );
+    }
 }

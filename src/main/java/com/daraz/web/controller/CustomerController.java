@@ -16,6 +16,8 @@ import java.util.List;
 public class CustomerController {
 
     private final CustomerService customerService;
+    private final com.daraz.web.service.EmailService emailService;
+    private final com.daraz.web.repo.CustomerRepo customerRepo;
 
     @GetMapping("/{id}")
     public ResponseEntity<StandardResponse> getCustomer(@PathVariable String id){
@@ -80,4 +82,36 @@ public class CustomerController {
         );
     }
 
+    @PostMapping("/forgot-password")
+    public ResponseEntity<StandardResponse> forgotPassword(@RequestParam String email) {
+        if (!customerRepo.existsByEmail(email)) {
+            throw new com.daraz.web.exception.custom.EntryNotFoundException("Email is not registered!");
+        }
+        String mockOtp = String.valueOf((int) (Math.random() * 900000) + 100000); // 6-digit OTP
+        emailService.sendPasswordResetEmail(email, mockOtp);
+        return new ResponseEntity<>(
+                new StandardResponse(
+                        200,
+                        "Password reset verification email sent!",
+                        mockOtp
+                ), HttpStatus.OK
+        );
+    }
+
+    @PostMapping("/wishlist-reminder/{customerId}")
+    public ResponseEntity<StandardResponse> sendWishlistReminder(
+            @PathVariable String customerId,
+            @RequestParam String productName,
+            @RequestParam String price
+    ) {
+        CustomerDTO customer = customerService.viewById(customerId);
+        emailService.sendWishlistReminderEmail(customer.getEmail(), productName, price);
+        return new ResponseEntity<>(
+                new StandardResponse(
+                        200,
+                        "Wishlist reminder email sent successfully!",
+                        null
+                ), HttpStatus.OK
+        );
+    }
 }
