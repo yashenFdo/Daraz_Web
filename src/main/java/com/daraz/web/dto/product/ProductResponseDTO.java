@@ -23,7 +23,7 @@ public class ProductResponseDTO {
     private String productName;
     private String brandName;
     private String shopName;
-    private ProductCategory category;
+    private com.daraz.web.dto.category.ProductCategoryResponseDTO category;
     private String warranty;
     private int itemsSold;
     private BigDecimal originalPrice;

@@ -14,7 +14,7 @@ import java.util.List;
  * @email : yashensavindu@gmail.com
  * @since : 0.1.0
  **/
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {ProductCategoryConverter.class})
 public interface ProductConverter {
 
     @org.mapstruct.Mapping(target = "id", ignore = true)
