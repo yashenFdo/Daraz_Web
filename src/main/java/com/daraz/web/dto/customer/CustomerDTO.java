@@ -24,4 +24,5 @@ public class CustomerDTO {
     private String mobileNumber; // so i expect it shout +94 format.
 
     private String nic;
+    private String password;
 }

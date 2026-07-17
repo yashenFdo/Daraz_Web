@@ -38,4 +38,10 @@ public class Customer {
 
     @Column(name = "is_active", columnDefinition = "BOOLEAN DEFAULT true")
     private boolean isActive = true;
+
+    @Column(name = "password", length = 255)
+    private String password;
+
+    @Column(name = "role", nullable = false, length = 50)
+    private String role = "USER";
 }

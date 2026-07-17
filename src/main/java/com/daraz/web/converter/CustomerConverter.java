@@ -11,6 +11,8 @@ import java.util.List;
 public interface CustomerConverter {
 
     @org.mapstruct.Mapping(target = "active", ignore = true)
+    @org.mapstruct.Mapping(target = "password", ignore = true)
+    @org.mapstruct.Mapping(target = "role", ignore = true)
     Customer toEntity(CustomerDTO customerDTO);
     CustomerDTO toDto(Customer customer);
     List<CustomerDTO> toDtoList(List<Customer> customers);

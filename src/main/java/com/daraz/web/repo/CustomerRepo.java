@@ -17,4 +17,6 @@ public interface CustomerRepo extends JpaRepository<Customer,String> {
     boolean existsByMobileNumberAndIdNot(String mobileNumber, String id);
 
     Object removeById(String id);
+
+    java.util.Optional<Customer> findByEmail(String email);
 }
