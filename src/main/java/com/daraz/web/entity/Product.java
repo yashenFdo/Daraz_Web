@@ -117,4 +117,17 @@ public class Product {
     public void incrementSoldCount(int quantity) {
         this.itemsSold += quantity;
     }
+
+    @PrePersist
+    @PreUpdate
+    private void calculatePriceAfterDiscount() {
+        if (originalPrice != null) {
+            if (discountPercentage != null && discountPercentage.compareTo(BigDecimal.ZERO) > 0) {
+                BigDecimal discountFactor = BigDecimal.ONE.subtract(discountPercentage.divide(BigDecimal.valueOf(100)));
+                this.priceAfterDiscount = originalPrice.multiply(discountFactor);
+            } else {
+                this.priceAfterDiscount = originalPrice;
+            }
+        }
+    }
 }

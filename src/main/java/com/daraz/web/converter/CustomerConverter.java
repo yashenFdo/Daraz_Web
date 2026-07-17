@@ -10,6 +10,7 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface CustomerConverter {
 
+    @org.mapstruct.Mapping(target = "active", ignore = true)
     Customer toEntity(CustomerDTO customerDTO);
     CustomerDTO toDto(Customer customer);
     List<CustomerDTO> toDtoList(List<Customer> customers);
