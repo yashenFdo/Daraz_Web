@@ -43,4 +43,16 @@ public class AppWideExceptionHandler {
                 HttpStatus.CONFLICT
         );
     }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<StandardResponse> handleIllegalArgument(IllegalArgumentException e){
+        return new ResponseEntity<StandardResponse>(
+                new StandardResponse(
+                        400,
+                        e.getMessage(),
+                        null
+                ),
+                HttpStatus.BAD_REQUEST
+        );
+    }
 }
