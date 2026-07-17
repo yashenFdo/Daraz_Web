@@ -33,31 +33,43 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     public ProductCategoryResponseDTO save(ProductCategoryRequestDTO dto) {
         ProductCategory entity = productCategoryConverter.toEntity(dto);
         ProductCategory saved = productCategoryRepo.save(entity);
-        return productCategoryConverter.toDto(entity);
+        return productCategoryConverter.toDto(saved);
     }
 
     @Override
     public ProductCategoryResponseDTO modify(Long id, ProductCategoryRequestDTO dto) {
-        if(!productCategoryRepo.existsById(id)){
-            throw new EntryNotFoundException("NO Such Product Category.");
+        return productCategoryRepo.findById(id)
+                .map(category -> {
+                    category.setName(dto.getName());
+                    category.setCategoryImage(dto.getCategoryImage());
+                    category.setParentCategory(productCategoryConverter.mapParentCategory(dto.getParentId()));
+                    ProductCategory updated = productCategoryRepo.save(category);
+                    return productCategoryConverter.toDto(updated);
+                })
+                .orElseThrow(() -> new EntryNotFoundException("NO Such Product Category. given id: " + id));
+    }
+
+    @Override
+    public boolean remove(Long id) {
+        if (!productCategoryRepo.existsById(id)) {
+            throw new EntryNotFoundException("NO Such Product Category. given id: " + id);
         }
-//        return productCategoryRepo.findById(id)
-//                .map(productCategory -> productCategoryConverter.toEntity(dto));
-        return null;
+        productCategoryRepo.deleteById(id);
+        return true;
     }
 
     @Override
-    public boolean remove(Long aLong) {
-        return false;
-    }
-
-    @Override
-    public ProductCategoryResponseDTO viewById(Long aLong) {
-        return null;
+    public ProductCategoryResponseDTO viewById(Long id) {
+        return productCategoryRepo.findById(id)
+                .map(productCategoryConverter::toDto)
+                .orElseThrow(() -> new EntryNotFoundException("NO Such Product Category. given id: " + id));
     }
 
     @Override
     public List<ProductCategoryResponseDTO> viewAll() {
-        return null;
+        List<ProductCategory> all = productCategoryRepo.findAll();
+        return all.stream()
+                .map(productCategoryConverter::toDto)
+                .toList();
     }
 }
